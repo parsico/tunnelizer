@@ -40,7 +40,7 @@ service_dir="/etc/systemd/system"      # systemd unit files
 
 # » Download Tunnelizer binary (kept original upstream urls)
 download_and_extract_tunnelizer() {
-  [[ -f "${config_dir}/pingtunnel" ]] && return 0;
+  [[ -f "${config_dir}/tunnelizer" ]] && return 0;
 
   local DOWNLOAD_URL ARCH;
   ARCH=$(uname -m);
@@ -63,11 +63,11 @@ download_and_extract_tunnelizer() {
 
   local DL; DL=$(mktemp -d);
   colorize blue "Downloading Tunnelizer…" bold; sleep 1;
-  curl -sSL -o "$DL/pingtunnel.zip" "$DOWNLOAD_URL" || { colorize red "Download failed." bold; exit 1; };
+  curl -sSL -o "$DL/tunnelizer.zip" "$DOWNLOAD_URL" || { colorize red "Download failed." bold; exit 1; };
   colorize blue "Extracting…" bold; sleep 1;
   mkdir -p "$config_dir";
-  unzip -q "$DL/pingtunnel.zip" -d "$config_dir";
-  chmod +x "${config_dir}/pingtunnel";
+  unzip -q "$DL/tunnelizer.zip" -d "$config_dir";
+  chmod +x "${config_dir}/tunnelizer";
   echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all; # stealth mode
   colorize green "Tunnelizer core installed successfully." bold;
   rm -rf "$DL";
@@ -102,7 +102,7 @@ display_server_info() {
 }
 
 display_tunnelizer_status() {
-  if [[ -f "${config_dir}/pingtunnel" ]]; then
+  if [[ -f "${config_dir}/tunnelizer" ]]; then
     colorize cyan "Tunnelizer Core: ${green}Installed${cyan}";
   else
     colorize cyan "Tunnelizer Core: ${red}Not installed${cyan}";
@@ -124,7 +124,7 @@ check_port() {
 
 # » Configuration wizard
 configure_tunnel() {
-  [[ ! -f "${config_dir}/pingtunnel" ]] && { colorize red "Tunnelizer core missing. Install first." bold; press_key; return 1; };
+  [[ ! -f "${config_dir}/tunnelizer" ]] && { colorize red "Tunnelizer core missing. Install first." bold; press_key; return 1; };
   clear; colorize blue "Configure Tunnelizer" bold; echo;
   colorize green "1) Iran node (client)" bold;
   colorize green "2) Kharej node (server)" bold; echo;
@@ -154,7 +154,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=${config_dir}/pingtunnel -type client -l :${tunnel_port} -s ${kharej_ip} -t 127.0.0.1:${tunnel_port} -tcp 1
+ExecStart=${config_dir}/tunnelizer -type client -l :${tunnel_port} -s ${kharej_ip} -t 127.0.0.1:${tunnel_port} -tcp 1
 Restart=always
 RestartSec=3
 
@@ -178,7 +178,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=${config_dir}/pingtunnel -type server
+ExecStart=${config_dir}/tunnelizer -type server
 Restart=always
 RestartSec=3
 
