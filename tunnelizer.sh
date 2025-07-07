@@ -128,7 +128,7 @@ configure_tunnel() {
   clear; colorize blue "Configure Tunnelizer" bold; echo;
   colorize green "1) Iran node (client)" bold;
   colorize green "2) Kharej node (server)" bold; echo;
-  read -p "Enter choice [1‑2]: " choice;
+  read -p "Enter choice [1/2]: " choice;
   case $choice in
     1) iran_server_configuration;;
     2) kharej_server_configuration;;
@@ -255,7 +255,7 @@ display_menu() {
 }
 
 read_option() {
-  read -p "Enter choice [0‑5]: " choice;
+  read -p "Enter choice [0/5]: " choice;
   case $choice in
     1) configure_tunnel;;
     2) tunnel_management;;
