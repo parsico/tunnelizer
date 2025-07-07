@@ -1,18 +1,4 @@
 #!/bin/bash
-
-# ───────────────────────────────────────────────────────────────
-#  Tunnelizer – Interactive PingTunnel wrapper
-#  Customized for <user> – July 2025
-# ───────────────────────────────────────────────────────────────
-#  Requirements  : bash ≥4, systemd ≥240, curl, unzip
-#  Description   : Easy two‑node reverse/forward tunnelling using
-#                  PingTunnel, with colourful interactive menu.
-#  Author        : Adapted by ChatGPT (OpenAI o3) — original base
-#                  by @ppouria (github.com/ppouria/ping-tunnel)
-#  License       : MIT
-# ───────────────────────────────────────────────────────────────
-
-# » Root‑check
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root" >&2
    sleep 1
@@ -91,14 +77,13 @@ download_and_extract_tunnelizer() {
 display_logo() {
   echo -e "${purple}";
   cat << 'EOF'
-   _______                       _      _              
-  |__   __|                     | |    | |             
-     | | _ __  _   _ _ __   ___ | | ___| |_ ___  _ __  
-     | || '_ \| | | | '_ \ / _ \| |/ _ \ __/ _ \| '__| 
-     | || | | | |_| | | | | (_) | |  __/ || (_) | |    
-     |_||_| |_|\__, |_| |_|\___/|_|\___|\__\___/|_|    
-                __/ |                                 
-               |___/                                  
+████████╗██╗   ██╗███╗   ██╗███╗   ██╗███████╗██╗     ██╗███████╗███████╗██████╗ 
+╚══██╔══╝██║   ██║████╗  ██║████╗  ██║██╔════╝██║     ██║╚══███╔╝██╔════╝██╔══██╗
+   ██║   ██║   ██║██╔██╗ ██║██╔██╗ ██║█████╗  ██║     ██║  ███╔╝ █████╗  ██████╔╝
+   ██║   ██║   ██║██║╚██╗██║██║╚██╗██║██╔══╝  ██║     ██║ ███╔╝  ██╔══╝  ██╔══██╗
+   ██║   ╚██████╔╝██║ ╚████║██║ ╚████║███████╗███████╗██║███████╗███████╗██║  ██║
+   ╚═╝    ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝╚══════╝╚═╝╚══════╝╚══════╝╚═╝  ╚═╝
+                                                                                 
 EOF
   colorize green "Version: ${orange}v1.0${reset}" bold;
   colorize green "GitHub: ${orange}github.com/yourname/tunnelizer${reset}" bold;
