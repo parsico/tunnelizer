@@ -45,19 +45,19 @@ download_and_extract_tunnelizer() {
   local DOWNLOAD_URL ARCH;
   ARCH=$(uname -m);
   case $ARCH in
-    x86_64)    DOWNLOAD_URL="https://github.com/esrrhs/pingtunnel/releases/download/2.8/pingtunnel_linux_amd64.zip";;
-    arm*)      DOWNLOAD_URL="https://github.com/esrrhs/pingtunnel/releases/download/2.8/pingtunnel_linux_arm.zip";;
-    aarch64)   DOWNLOAD_URL="https://github.com/esrrhs/pingtunnel/releases/download/2.8/pingtunnel_linux_arm64.zip";;
-    mips)      DOWNLOAD_URL="https://github.com/esrrhs/pingtunnel/releases/download/2.8/pingtunnel_linux_mips.zip";;
-    mipsel)    DOWNLOAD_URL="https://github.com/esrrhs/pingtunnel/releases/download/2.8/pingtunnel_linux_mipsle.zip";;
-    mips64)    DOWNLOAD_URL="https://github.com/esrrhs/pingtunnel/releases/download/2.8/pingtunnel_linux_mips64.zip";;
-    mips64el)  DOWNLOAD_URL="https://github.com/esrrhs/pingtunnel/releases/download/2.8/pingtunnel_linux_mips64le.zip";;
-    ppc64)     DOWNLOAD_URL="https://github.com/esrrhs/pingtunnel/releases/download/2.8/pingtunnel_linux_ppc64.zip";;
-    ppc64le)   DOWNLOAD_URL="https://github.com/esrrhs/pingtunnel/releases/download/2.8/pingtunnel_linux_ppc64le.zip";;
-    riscv64)   DOWNLOAD_URL="https://github.com/esrrhs/pingtunnel/releases/download/2.8/pingtunnel_linux_riscv64.zip";;
-    s390x)     DOWNLOAD_URL="https://github.com/esrrhs/pingtunnel/releases/download/2.8/pingtunnel_linux_s390x.zip";;
-    i386|i686) DOWNLOAD_URL="https://github.com/esrrhs/pingtunnel/releases/download/2.8/pingtunnel_linux_386.zip";;
-    loong64)   DOWNLOAD_URL="https://github.com/esrrhs/pingtunnel/releases/download/2.8/pingtunnel_linux_loong64.zip";;
+    x86_64)    DOWNLOAD_URL="https://github.com/parsico/tunnelizer/releases/download/Tunnelizer/tunnelizer_linux_amd64.zip";;
+    arm*)      DOWNLOAD_URL="https://github.com/parsico/tunnelizer/releases/download/Tunnelizer/tunnelizer_linux_arm.zip";;
+    aarch64)   DOWNLOAD_URL="https://github.com/parsico/tunnelizer/releases/download/Tunnelizer/tunnelizer_linux_arm64.zip";;
+    mips)      DOWNLOAD_URL="https://github.com/parsico/tunnelizer/releases/download/Tunnelizer/tunnelizer_linux_mips.zip";;
+    mipsel)    DOWNLOAD_URL="https://github.com/parsico/tunnelizer/releases/download/Tunnelizer/tunnelizer_linux_mipsle.zip";;
+    mips64)    DOWNLOAD_URL="https://github.com/parsico/tunnelizer/releases/download/Tunnelizer/tunnelizer_linux_mips64.zip";;
+    mips64el)  DOWNLOAD_URL="https://github.com/parsico/tunnelizer/releases/download/Tunnelizer/tunnelizer_linux_mips64le.zip";;
+    ppc64)     DOWNLOAD_URL="https://github.com/parsico/tunnelizer/releases/download/Tunnelizer/tunnelizer_linux_ppc64.zip";;
+    ppc64le)   DOWNLOAD_URL="https://github.com/parsico/tunnelizer/releases/download/Tunnelizer/tunnelizer_linux_ppc64le.zip";;
+    riscv64)   DOWNLOAD_URL="https://github.com/parsico/tunnelizer/releases/download/Tunnelizer/tunnelizer_linux_riscv64.zip";;
+    s390x)     DOWNLOAD_URL="https://github.com/parsico/tunnelizer/releases/download/Tunnelizer/tunnelizer_linux_s390x.zip";;
+    i386|i686) DOWNLOAD_URL="https://github.com/parsico/tunnelizer/releases/download/Tunnelizer/tunnelizer_linux_386.zip";;
+    loong64)   DOWNLOAD_URL="https://github.com/parsico/tunnelizer/releases/download/Tunnelizer/tunnelizer_linux_loong64.zip";;
     *) colorize red "Unsupported architecture: $ARCH" bold; sleep 1; exit 1;;
   esac
 
