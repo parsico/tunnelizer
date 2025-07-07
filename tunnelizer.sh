@@ -102,6 +102,7 @@ EOF
   colorize green "Version: ${orange}v1.0${reset}" bold;
   colorize green "GitHub: ${orange}github.com/parsico/tunnelizer${reset}" bold;
   colorize green "Telegram: ${orange}@PARSDADE${reset}" bold;
+  colorize green "Official Site: ${orange}WWW.PARSICO.ORG${reset}" bold;
 }
 
 display_server_info() {
