@@ -35,10 +35,10 @@ install_pkg() {
 install_pkg unzip; install_pkg curl;
 
 # » Globals
-config_dir="/root/tunnelizer-core"     # new home for PingTunnel binary
+config_dir="/root/tunnelizer-core"     # new home for binary
 service_dir="/etc/systemd/system"      # systemd unit files
 
-# » Download PingTunnel binary (kept original upstream urls)
+# » Download Tunnelizer binary (kept original upstream urls)
 download_and_extract_tunnelizer() {
   [[ -f "${config_dir}/pingtunnel" ]] && return 0;
 
@@ -62,7 +62,7 @@ download_and_extract_tunnelizer() {
   esac
 
   local DL; DL=$(mktemp -d);
-  colorize blue "Downloading PingTunnel…" bold; sleep 1;
+  colorize blue "Downloading Tunnelizer…" bold; sleep 1;
   curl -sSL -o "$DL/pingtunnel.zip" "$DOWNLOAD_URL" || { colorize red "Download failed." bold; exit 1; };
   colorize blue "Extracting…" bold; sleep 1;
   mkdir -p "$config_dir";
