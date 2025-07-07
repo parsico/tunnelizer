@@ -71,7 +71,7 @@ download_and_extract_tunnelizer() {
   unzip -q "$DL/tunnelizer.zip" -d "$config_dir";
   chmod +x "${config_dir}/tunnelizer";
   [[ $(cat /proc/sys/net/ipv4/icmp_echo_ignore_all) -eq 0 ]] && echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all;
-  colorize green "Tunnelizer core installed successfully." bold;
+  colorize green "Tunnelizer  installed successfully." bold;
   rm -rf "$DL";
 }
 
@@ -227,7 +227,7 @@ tunnel_management() {
   colorize red "3) Delete" bold;
   colorize cyan "4) Logs" bold;
   colorize cyan "5) Status" bold; echo;
-  read -p "Action [0‑5]: " act;
+  read -p "Action [0/5]: " act;
   case $act in
     1) systemctl restart "$svc"; colorize green "Restarted." bold;;
     2) systemctl stop "$svc"; colorize red "Stopped." bold;;
@@ -254,8 +254,8 @@ display_menu() {
   colorize green   "1. Configure new tunnel" bold;
   colorize red     "2. Tunnel management" bold;
   colorize cyan    "3. Check tunnels status" bold;
-  colorize orange  "4. Install Tunnelizer core" bold;
-  colorize red     "5. Remove Tunnelizer core" bold;
+  colorize orange  "4. Install Tunnelizer Core" bold;
+  colorize red     "5. Remove Tunnelizer Core" bold;
   colorize white   "0. Exit" bold; echo; echo "-------------------------------";
 }
 
