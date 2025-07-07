@@ -86,8 +86,8 @@ display_logo() {
                                                                                  
 EOF
   colorize green "Version: ${orange}v1.0${reset}" bold;
-  colorize green "GitHub: ${orange}github.com/yourname/tunnelizer${reset}" bold;
-  colorize green "Telegram: ${orange}@MarzHelp${reset}" bold;
+  colorize green "GitHub: ${orange}github.com/parsico/tunnelizer${reset}" bold;
+  colorize green "Telegram: ${orange}@PARSDADE${reset}" bold;
 }
 
 # » Server info
