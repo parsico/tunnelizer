@@ -7,19 +7,19 @@ fi
 
 press_key() { read -p "Press any key to continue…"; }
 
-# » ANSI colours & styles
+# » ANSI colours & styles
 purple="\033[35m"; green="\033[32m"; orange="\033[33m"; blue="\033[34m";
 red="\033[31m"; cyan="\033[36m"; white="\033[37m"; reset="\033[0m";
 bold="\033[1m"; underline="\033[4m"; normal="\033[0m";
 
-colorize() { # $1 colour  $2 text  [$3 style]
+colorize() {
   local colour_code style_code;
   case $1 in purple) colour_code=$purple;; green) colour_code=$green;; orange) colour_code=$orange;; blue) colour_code=$blue;; red) colour_code=$red;; cyan) colour_code=$cyan;; white) colour_code=$white;; *) colour_code=$reset;; esac;
   case ${3:-normal} in bold) style_code=$bold;; underline) style_code=$underline;; *) style_code=$normal;; esac;
   echo -e "${style_code}${colour_code}${2}${reset}";
 }
 
-# » Helpers to ensure deps
+# » Ensure required packages
 install_pkg() {
   local pkg=$1;
   if ! command -v "$pkg" &>/dev/null; then
@@ -32,13 +32,15 @@ install_pkg() {
     fi
   fi
 }
-install_pkg unzip; install_pkg curl;
+install_pkg unzip
+install_pkg curl
+install_pkg jq
 
-# » Globals
-config_dir="/root/tunnelizer-core"     # new home for binary
-service_dir="/etc/systemd/system"      # systemd unit files
+# » Globals
+config_dir="/root/tunnelizer-core"
+service_dir="/etc/systemd/system"
 
-# » Download Tunnelizer binary (kept original upstream urls)
+# » Download & install binary
 download_and_extract_tunnelizer() {
   [[ -f "${config_dir}/tunnelizer" ]] && return 0;
 
@@ -68,12 +70,25 @@ download_and_extract_tunnelizer() {
   mkdir -p "$config_dir";
   unzip -q "$DL/tunnelizer.zip" -d "$config_dir";
   chmod +x "${config_dir}/tunnelizer";
-  echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all; # stealth mode
+  [[ $(cat /proc/sys/net/ipv4/icmp_echo_ignore_all) -eq 0 ]] && echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all;
   colorize green "Tunnelizer core installed successfully." bold;
   rm -rf "$DL";
 }
 
-# » Splash logo
+# » Create launcher
+install_launcher() {
+  local launcher=/usr/local/bin/tunnelizer
+  if [[ ! -f $launcher ]]; then
+    cat > "$launcher" << 'LAUNCHER'
+#!/bin/bash
+exec bash <(curl -Ls https://raw.githubusercontent.com/parsico/tunnelizer/refs/heads/main/tunnelizer.sh)
+LAUNCHER
+    chmod +x "$launcher"
+    colorize green "You can now run tunnelizer by typing: ${cyan}tunnelizer" bold;
+  fi
+}
+
+# » UI: logo & info
 display_logo() {
   echo -e "${purple}";
   cat << 'EOF'
@@ -83,14 +98,12 @@ display_logo() {
    ██║   ██║   ██║██║╚██╗██║██║╚██╗██║██╔══╝  ██║     ██║ ███╔╝  ██╔══╝  ██╔══██╗
    ██║   ╚██████╔╝██║ ╚████║██║ ╚████║███████╗███████╗██║███████╗███████╗██║  ██║
    ╚═╝    ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝╚══════╝╚═╝╚══════╝╚══════╝╚═╝  ╚═╝
-                                                                                 
 EOF
   colorize green "Version: ${orange}v1.0${reset}" bold;
   colorize green "GitHub: ${orange}github.com/parsico/tunnelizer${reset}" bold;
   colorize green "Telegram: ${orange}@PARSDADE${reset}" bold;
 }
 
-# » Server info
 display_server_info() {
   local SERVER_IP SERVER_COUNTRY SERVER_ISP;
   SERVER_IP=$(hostname -I | awk '{print $1}');
@@ -110,7 +123,6 @@ display_tunnelizer_status() {
   colorize cyan "═════════════════════════════════════════════";
 }
 
-# » Port validation
 check_port() {
   local port=$1;
   if [[ "$port" =~ ^[0-9]+$ ]] && [ "$port" -gt 1024 ] && [ "$port" -le 65535 ]; then
@@ -122,7 +134,6 @@ check_port() {
   fi
 }
 
-# » Configuration wizard
 configure_tunnel() {
   [[ ! -f "${config_dir}/tunnelizer" ]] && { colorize red "Tunnelizer core missing. Install first." bold; press_key; return 1; };
   clear; colorize blue "Configure Tunnelizer" bold; echo;
@@ -162,11 +173,9 @@ RestartSec=3
 WantedBy=multi-user.target
 EOF
   systemctl daemon-reload >/dev/null 2>&1;
-  if systemctl enable --now "tunnelizer-iran${tunnel_port}.service" >/dev/null 2>&1; then
-    colorize green "Client tunnel on :$tunnel_port started." bold;
-  else
-    colorize red "Failed starting client tunnel!" bold; return 1;
-  fi
+  systemctl enable --now "tunnelizer-iran${tunnel_port}.service" >/dev/null 2>&1 && \
+    colorize green "Client tunnel on :$tunnel_port started." bold || \
+    colorize red "Failed starting client tunnel!" bold;
 }
 
 kharej_server_configuration() {
@@ -186,11 +195,9 @@ RestartSec=3
 WantedBy=multi-user.target
 EOF
   systemctl daemon-reload >/dev/null 2>&1;
-  if systemctl enable --now "tunnelizer-kharej.service" >/dev/null 2>&1; then
-    colorize green "Kharej server service started." bold;
-  else
-    colorize red "Failed to start Kharej server service." bold; return 1;
-  fi
+  systemctl enable --now "tunnelizer-kharej.service" >/dev/null 2>&1 && \
+    colorize green "Kharej server service started." bold || \
+    colorize red "Failed to start Kharej server service." bold;
 }
 
 check_tunnel_status() {
@@ -198,14 +205,12 @@ check_tunnel_status() {
   local found=0;
   for service in $(systemctl list-units --type=service | grep tunnelizer | awk '{print $1}'); do
     found=1;
-    if systemctl is-active --quiet "$service"; then colorize green "$service is running" bold;
-    else colorize red "$service is NOT running" bold; fi;
+    systemctl is-active --quiet "$service" && colorize green "$service is running" bold || colorize red "$service is NOT running" bold;
   done;
   [[ $found -eq 0 ]] && colorize red "No Tunnelizer services found." bold;
   press_key;
 }
 
-# » Service management menu
 tunnel_management() {
   clear; colorize blue "Tunnel Management" bold; echo;
   local services=( $(systemctl list-units --type=service | grep tunnelizer | awk '{print $1}') );
@@ -243,7 +248,6 @@ remove_core() {
   press_key;
 }
 
-# » Main menu
 display_menu() {
   clear; display_logo; display_server_info; display_tunnelizer_status; echo;
   colorize green   "1. Configure new tunnel" bold;
@@ -267,8 +271,9 @@ read_option() {
   esac
 }
 
-# » Bootstrap core (optional auto‑install)
-download_and_extract_tunnelizer;
+# » Init
+download_and_extract_tunnelizer
+install_launcher
 
-# » Run!
+# » Start menu
 while true; do display_menu; read_option; done
